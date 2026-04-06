@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Social Super</title>
+
+<!-- PWA & iOS Meta Tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Social Super">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a08">
+<meta name="format-detection" content="telephone=no">
+
+<!-- PWA Manifest (inline via data URI) -->
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU29jaWFsIFN1cGVyIiwic2hvcnRfbmFtZSI6IlNvY2lhbCBTdXBlciIsImRlc2NyaXB0aW9uIjoiRWR5ICYgTmF0aGFuIFN0cmF0ZWd5IEFnZW50Iiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwYTBhMDgiLCJ0aGVtZV9jb2xvciI6IiMwYTBhMDgiLCJpY29ucyI6W119">
+
+<!-- Splash Screen Styles for iOS -->
+<style>
+  /* âââ RESET & BASE âââ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%; width: 100%;
+    overflow: hidden;
+    background: #0a0a08;
+    color: #e8e0d0;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* âââ CSS VARIABLES âââ */
+  :root {
+    --gold: #c4a35a;
+    --gold-dark: #8b6914;
+    --gold-light: #f0e6cc;
+    --bg: #0a0a08;
+    --bg-elevated: rgba(255,255,255,0.03);
+    --bg-subtle: rgba(196,163,90,0.02);
+    --border: rgba(196,163,90,0.1);
+    --border-subtle: rgba(196,163,90,0.06);
+    --text-primary: #e8e0d0;
+    --text-muted: #8a7d65;
+    --text-dim: #6b6150;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --ig: #E1306C;
+    --tk: #00f2ea;
+    --yt: #FF0000;
+    --kw: #ff6a00;
+  }
+
+  /* âââ APP SHELL âââ */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* âââ HEADER âââ */
+  .header {
+    padding: calc(var(--safe-top) + 10px) 16px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900; color: var(--bg);
+    letter-spacing: -0.5px;
+    box-shadow: 0 2px 12px rgba(196,163,90,0.2);
+  }
+
+  .header-title {
+    font-size: 15px; font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  .header-sub {
+    font-size: 10px; color: var(--text-muted);
+    letter-spacing: 0.3px;
+    margin-top: 1px;
+  }
+
+  .header-actions {
+    display: flex; gap: 6px;
+  }
+
+  .icon-btn {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    border: 1px solid rgba(196,163,90,0.15);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-appearance: none;
+    transition: all 0.2s;
+  }
+
+  .icon-btn:active {
+    background: rgba(196,163,90,0.1);
+    transform: scale(0.92);
+  }
+
+  /* âââ STATS BAR âââ */
+  .stats-bar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 16px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .stats-bar::-webkit-scrollbar { display: none; }
+
+  .stat-card {
+    flex: 1 0 72px;
+    min-width: 72px;
+    padding: 8px 8px;
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid rgba(196,163,90,0.06);
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 9px; font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-size: 18px; font-weight: 900;
+    color: var(--gold-light);
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-bar-track {
+    height: 3px; border-radius: 2px;
+    background: rgba(255,255,255,0.06);
+    margin-top: 5px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stat-meta {
+    font-size: 9px;
+    color: rgba(196,163,90,0.4);
+    margin-top: 3px;
+  }
+
+  /* âââ PLATFORM FILTER âââ */
+  .platforms {
+    display: flex;
+    gap: 5px;
+    padding: 8px 16px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .platforms::-webkit-scrollbar { display: none; }
+
+  .plat-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(196,163,90,0.12);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-appearance: none;
+    transition: all 0.2s;
+  }
+
+  .plat-btn.active {
+    border-color: var(--gold);
+    background: rgba(196,163,90,0.12);
+    color: var(--gold);
+  }
+
+  .plat-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* âââ CHAT AREA âââ */
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 16px 8px;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* âââ WELCOME SCREEN âââ */
+  .welcome {
+    text-align: center;
+    padding: 24px 16px 18px;
+    margin-bottom: 10px;
+  }
+
+  .welcome-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+    animation: welcomePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes welcomePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .welcome-title {
+    font-size: 18px; font-weight: 800;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .welcome-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* âââ QUICK ACTIONS GRID âââ */
+  .quick-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 0 0 12px;
+  }
+
+  .quick-btn {
+    padding: 13px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(196,163,90,0.1);
+    background: var(--bg-elevated);
+    color: #d4c8a8;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+    line-height: 1.4;
+    -webkit-appearance: none;
+    transition: all 0.15s;
+  }
+
+  .quick-btn:active {
+    border-color: var(--gold);
+    background: rgba(196,163,90,0.08);
+    transform: scale(0.97);
+  }
+
+  /* âââ QUICK ACTIONS INLINE (when chat has messages) âââ */
+  .quick-inline {
+    padding: 0 16px;
+    flex-shrink: 0;
+  }
+
+  .quick-toggle {
+    width: 100%;
+    padding: 6px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+  .quick-scroll {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .quick-scroll::-web­¥ÐµÍÉ½±±Èì¥ÍÁ±äè¹½¹ìô((¹ÅÕ¥¬µ¡¥Àì(Á¥¹èÙÁàÄÍÁàì(½ÉÈµÉ¥ÕÌèÄáÁàì(½ÉÈèÅÁàÍ½±¥É ÄäØ°ÄØÌ°äÀ°À¸ÄÔ¤ì(­É½Õ¹èÉ ÄäØ°ÄØÌ°äÀ°À¸ÀÔ¤ì(½±½ÈèÙÈ ´µ½±¤ì(ÕÉÍ½ÈèÁ½¥¹ÑÈì(½¹ÐµÍ¥éèÄÅÁàì(½¹ÐµÝ¥¡ÐèØÀÀì(Ý¡¥ÑµÍÁè¹½ÝÉÀì(±àµÍ¡É¥¹¬èÀì(µÝ­¥ÐµÁÁÉ¹è¹½¹ì(ÑÉ¹Í¥Ñ¥½¸è±°À¸ÄÕÌì(ô((¹ÅÕ¥¬µ¡¥ÀéÑ¥Ùì(­É½Õ¹èÉ ÄäØ°ÄØÌ°äÀ°À¸ÄÔ¤ì(ÑÉ¹Í½É´èÍ± À¸äÔ¤ì(ô((¼¨RRR 5MM	U		1LRRR ¨¼(¹µÍµÉ½Üì(¥ÍÁ±äè±àì(µÉ¥¸µ½ÑÑ½´èÄÁÁàì(¹¥µÑ¥½¸èµÍ%¸À¸ÍÌÕ¥µé¥È À¸ÄØ°Ä°À¸Ì°Ä¤ì(ô((­åÉµÌµÍ%¸ì(É½´ì½Á¥ÑäèÀìÑÉ¹Í½É´èÑÉ¹Í±Ñd ÄÉÁà¤ìô(Ñ¼ì½Á¥ÑäèÄìÑÉ¹Í½É´èÑÉ¹Í±Ñd À¤ìô(ô((¹µÍµÉ½Ü¹ÕÍÈì©ÕÍÑ¥äµ½¹Ñ¹Ðè±àµ¹ìÁ¥¹µ±ÐèÐáÁàìô(¹µÍµÉ½Ü¹ÍÍ¥ÍÑ¹Ðì©ÕÍÑ¥äµ½¹Ñ¹Ðè±àµÍÑÉÐìÁ¥¹µÉ¥¡ÐèÐáÁàìô((¹µÍµÕ±ì(Á¥¹èÄÉÁàÄÙÁàì(½¹ÐµÍ¥éèÄÑÁàì(±¥¹µ¡¥¡ÐèÄ¸Üì(Ý¡¥ÑµÍÁèÁÉµÝÉÀì(Ý½ÉµÉ¬èÉ¬µÝ½Éì(µàµÝ¥Ñ èÄÀÀì(ô((¹µÍµÕ±¹ÕÍÈì(½ÉÈµÉ¥ÕÌèÈÁÁàÈÁÁàÑÁàÈÁÁàì(­É½Õ¹è±¥¹ÈµÉ¥¹Ð ÄÌÕ°ÙÈ ´µ½±¤°àààÉ¤ì(½±½ÈèÁÁÁì(½¹ÐµÝ¥¡ÐèÔÀÀì(ô((¹µÍµÕ±¹ÍÍ¥ÍÑ¹Ðì(½ÉÈµÉ¥ÕÌèÈÁÁàÈÁÁàÈÁÁàÑÁàì(­É½Õ¹èÉ ÈÔÔ°ÈÔÔ°ÈÔÔ°À¸ÀÔ¤ì(½±½ÈèÙÈ ´µÑáÐµÁÉ¥µÉä¤ì(½ÉÈèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤ì(ô((¼¨RRR QeA%9%9%
+Q=HRRR ¨¼(¹ÑåÁ¥¹ì(¥ÍÁ±äè±àì(ÀèÑÁàì(Á¥¹èÄÉÁàÄÙÁàì(±¥¸µ¥ÑµÌè¹ÑÈì(¹¥µÑ¥½¸èµÍ%¸À¸ÍÌÍì(ô((¹ÑåÁ¥¹µ±°ì(½¹ÐµÍ¥éèÄÅÁàì(½±½ÈèÙÈ ´µ½±¤ì(½¹ÐµÝ¥¡ÐèÜÀÀì(µÉ¥¸µÉ¥¡ÐèáÁàì(±ÑÑÈµÍÁ¥¹èÀ¸ÕÁàì(ô((¹ÑåÁ¥¹µ½Ðì(Ý¥Ñ èÝÁàì¡¥¡ÐèÝÁàì(½ÉÈµÉ¥ÕÌèÔÀì(­É½Õ¹èÙÈ ´µ½±¤ì(¹¥µÑ¥½¸è½ÑAÕ±ÍÄ¸ÉÌÍµ¥¸µ½ÕÐ¥¹¥¹¥Ñì(ô((¹ÑåÁ¥¹µ½Ðé¹Ñ µ¡¥± È¤ì¹¥µÑ¥½¸µ±äèÀ¸ÉÌìô(¹ÑåÁ¥¹µ½Ðé¹Ñ µ¡¥± Ì¤ì¹¥µÑ¥½¸µ±äèÀ¸ÑÌìô((­åÉµÌ½ÑAÕ±Íì(À°àÀ°ÄÀÀì½Á¥ÑäèÀ¸ÈìÑÉ¹Í½É´èÍ± À¸à¤ìô(ÐÀì½Á¥ÑäèÄìÑÉ¹Í½É´èÍ± Ä¸Ì¤ìô(ô((¼¨RRR %9AUPIRRR ¨¼(¹¥¹ÁÕÐµÉì(Á¥¹èÄÁÁàÄÙÁà±¡ÙÈ ´µÍµ½ÑÑ½´¤¬ÄÉÁà¤ì(½ÉÈµÑ½ÀèÅÁàÍ½±¥ÙÈ ´µ½ÉÈ¤ì(­É½Õ¹èÙÈ ´µµÍÕÑ±¤ì(±àµÍ¡É¥¹¬èÀì(­É½Àµ¥±ÑÈè±ÕÈ ÈÁÁà¤ì(µÝ­¥Ðµ­É½Àµ¥±ÑÈè±ÕÈ ÈÁÁà¤ì(ô((¹ÉÉ½ÈµÈì(Á¥¹èÝÁàÄÉÁàì(½ÉÈµÉ¥ÕÌèÄÁÁàì(µÉ¥¸µ½ÑÑ½´èáÁàì(­É½Õ¹èÉ ÈÈÀ°Ìà°Ìà°À¸Ä¤ì(½ÉÈèÅÁàÍ½±¥É ÈÈÀ°Ìà°Ìà°À¸È¤ì(½±½ÈèàÜÄÜÄì(½¹ÐµÍ¥éèÄÅÁàì(ô((¹¥¹ÁÕÐµÉ½Üì(¥ÍÁ±äè±àì(ÀèáÁàì(±¥¸µ¥ÑµÌè±àµ¹ì(ô((¹¥¹ÁÕÐµ¥±ì(±àèÄì(Á¥¹èÄÉÁàÄÙÁàì(½ÉÈµÉ¥ÕÌèÄÙÁàì(½ÉÈèÅÁàÍ½±¥É ÄäØ°ÄØÌ°äÀ°À¸ÄÔ¤ì(­É½Õ¹èÉ ÈÔÔ°ÈÔÔ°ÈÔÔ°À¸ÀÐ¤ì(½±½ÈèÙÈ ´µÑáÐµÁÉ¥µÉä¤ì(½¹ÐµÍ¥éèÄÑÁàì(½¹Ðµµ¥±äè¥¹¡É¥Ðì(ÉÍ¥éè¹½¹ì(½ÕÑ±¥¹è¹½¹ì(±¥¹µ¡¥¡ÐèÄ¸Ðì(µ¥¸µ¡¥¡ÐèÐÑÁàì(µàµ¡¥¡ÐèÄÈÁÁàì(µÝ­¥ÐµÁÁÉ¹è¹½¹ì(ÑÉ¹Í¥Ñ¥½¸è½ÉÈµ½±½ÈÀ¸ÉÌì(ô((¹¥¹ÁÕÐµ¥±é½ÕÌì(½ÉÈµ½±½ÈèÉ ÄäØ°ÄØÌ°äÀ°À¸ÌÔ¤ì(ô((¹¥¹ÁÕÐµ¥±èéÁ±¡½±Èì(½±½ÈèÉ ÄäØ°ÄØÌ°äÀ°À¸Ì¤ì(ô((¹Í¹µÑ¸ì(Ý¥Ñ èÐÑÁàì¡¥¡ÐèÐÑÁàì(½ÉÈµÉ¥ÕÌèÄÑÁàì(½ÉÈè¹½¹ì(­É½Õ¹èÉ ÈÔÔ°ÈÔÔ°ÈÔÔ°À¸ÀÔ¤ì(½±½ÈèÔÔÔì(½¹ÐµÍ¥éèÄÝÁàì(½¹ÐµÝ¥¡ÐèäÀÀì(ÕÉÍ½ÈèÕ±Ðì(¥ÍÁ±äè±àì(±¥¸µ¥ÑµÌè¹ÑÈì(©ÕÍÑ¥äµ½¹Ñ¹Ðè¹ÑÈì(±àµÍ¡É¥¹¬èÀì(µÝ­¥ÐµÁÁÉ¹è¹½¹ì(ÑÉ¹Í¥Ñ¥½¸è±°À¸ÉÌì(ô((¹Í¹µÑ¸¹Ñ¥Ùì(­É½Õ¹è±¥¹ÈµÉ¥¹Ð ÄÌÕ°ÙÈ ´µ½±¤°ÙÈ ´µ½±µÉ¬¤¤ì(½±½ÈèÙÈ ´µ¤ì(ÕÉÍ½ÈèÁ½¥¹ÑÈì(½àµÍ¡½ÜèÀÉÁàÄÉÁàÉ ÄäØ°ÄØÌ°äÀ°À¸ÈÔ¤ì(ô((¹Í¹µÑ¸¹Ñ¥ÙéÑ¥Ùì(ÑÉ¹Í½É´èÍ± À¸äÈ¤ì(ô((¼¨RRR A$-d5=0RRR ¨¼(¹µ½°µ½ÙÉ±äì(Á½Í¥Ñ¥½¸èÍ½±ÕÑì(¥¹ÍÐèÀì(èµ¥¹àèÄÀÀì(­É½Õ¹èÉ Ô°Ô°Ô°À¸äÜ¤ì(¥ÍÁ±äè±àì(±¥¸µ¥ÑµÌè¹ÑÈì(©ÕÍÑ¥äµ½¹Ñ¹Ðè¹ÑÈì(Á¥¹èÈÑÁàì(¹¥µÑ¥½¸è%¸À¸ÑÌÍì(ô((­åÉµÌ%¸ì(É½´ì½Á¥ÑäèÀìô(Ñ¼ì½Á¥ÑäèÄìô(ô((¹µ½°µ½àì(µàµÝ¥Ñ èÌàÁÁàì(Ý¥Ñ èÄÀÀì(Á¥¹èÌÙÁàÈáÁàì(½ÉÈµÉ¥ÕÌèÈÑÁàì(­É½Õ¹èÉ ÈÔÔ°ÈÔÔ°ÈÔÔ°À¸ÀÐ¤ì(½ÉÈèÅÁàÍ½±¥É ÄäØ°ÄØÌ°äÀ°À¸ÄÔ¤ì(¹¥µÑ¥½¸èµ½±%¸À¸ÕÌÕ¥µé¥È À¸ÄØ°Ä°À¸Ì°Ä¤ì(ô((­åÉµÌµ½±%¸ì(É½´ì½Á¥ÑäèÀìÑÉ¹Í½É´èÍ± À¸ä¤ÑÉ¹Í±Ñd ÈÁÁà¤ìô(Ñ¼ì½Á¥ÑäèÄìÑÉ¹Í½É´èÍ± Ä¤ÑÉ¹Í±Ñd À¤ìô(ô((¹µ½°µ¥½¸ì½¹ÐµÍ¥éèÌÙÁàìÑáÐµ±¥¸è¹ÑÈìµÉ¥¸µ½ÑÑ½´èÄÑÁàìô(¹µ½°µÑ¥Ñ±ì(½¹ÐµÍ¥éèÈÁÁàì½¹ÐµÝ¥¡ÐèàÀÀì(½±½ÈèÙÈ ´µ½±¤ìÑáÐµ±¥¸è¹ÑÈì(µÉ¥¸µ½ÑÑ½´èÙÁàì(ô(¹µ½°µÍì(½¹ÐµÍ¥éèÄÉÁàì½±½ÈèÙÈ ´µÑáÐµµÕÑ¤ì(ÑáÐµ±¥¸è¹ÑÈìµÉ¥¸µ½ÑÑ½´èÈÑÁàì(±¥¹µ¡¥¡ÐèÄ¸Øì(ô((¹µ½°µ¥¹ÁÕÐì(Ý¥Ñ èÄÀÀì(Á¥¹èÄÑÁàÄÙÁàì(½ÉÈµÉ¥ÕÌèÄÑÁàì(½ÉÈèÅÁàÍ½±¥É ÄäØ°ÄØÌ°äÀ°À¸È¤ì(­É½Õ¹èÉ ÈÔÔ°ÈÔÔ°ÈÔÔ°À¸ÀÔ¤ì(½±½ÈèÙÈ ´µÑáÐµÁÉ¥µÉä¤ì(½¹ÐµÍ¥éèÄÑÁàì(½¹Ðµµ¥±äè¥¹¡É¥Ðì(½ÕÑ±¥¹è¹½¹ì(µÉ¥¸µ½ÑÑ½´èÄÙÁàì(µÝ­¥ÐµÁÁÉ¹è¹½¹ì(ô((¹µ½°µ¥¹ÁÕÐé½ÕÌì(½ÉÈµ½±½ÈèÙÈ ´µ½±¤ì(ô((¹µ½°µÍÕµ¥Ðì(Ý¥Ñ èÄÀÀì(Á¥¹èÄÑÁàì(½ÉÈµÉ¥ÕÌèÄÑÁàì(½ÉÈè¹½¹ì(­É½Õ¹èÉ ÈÔÔ°ÈÔÔ°ÈÔÔ°À¸ÀØ¤ì(½±½ÈèÔÔÔì(½¹ÐµÍ¥éèÄÕÁàì(½¹ÐµÝ¥¡ÐèÜÀÀì(½¹Ðµµ¥±äè¥¹¡É¥Ðì(ÕÉÍ½ÈèÕ±Ðì(µÝ­¥ÐµÁÁÉ¹è¹½¹ì(ÑÉ¹Í¥Ñ¥½¸è±°À¸ÉÌì(ô((¹µ½°µÍÕµ¥Ð¹Éäì(­É½Õ¹è±¥¹ÈµÉ¥¹Ð ÄÌÕ°ÙÈ ´µ½±¤°ÙÈ ´µ½±µÉ¬¤¤ì(½±½ÈèÙÈ ´µ¤ì(ÕÉÍ½ÈèÁ½¥¹ÑÈì(½àµÍ¡½ÜèÀÑÁàÈÁÁàÉ ÄäØ°ÄØÌ°äÀ°À¸Ì¤ì(ô((¹µ½°µÍÕµ¥Ð¹ÉäéÑ¥Ùì(ÑÉ¹Í½É´èÍ± À¸äÜ¤ì(ô((¹µ½°µ½½ÑÈì(½¹ÐµÍ¥éèÄÁÁàì(½±½ÈèÉ ÄäØ°ÄØÌ°äÀ°À¸ÈÔ¤ì(ÑáÐµ±¥¸è¹ÑÈì(µÉ¥¸µÑ½ÀèÄÙÁàì(ô((¼¨RRR !%8RRR ¨¼(¹¡¥¸ì¥ÍÁ±äè¹½¹¥µÁ½ÉÑ¹Ðìô((¼¨RRR M
+I=11	HRRR ¨¼(¹¡ÐµÉèèµÝ­¥ÐµÍÉ½±±ÈìÝ¥Ñ èÍÁàìô(¹¡ÐµÉèèµÝ­¥ÐµÍÉ½±±ÈµÑ¡Õµì­É½Õ¹èÉ ÄäØ°ÄØÌ°äÀ°À¸ÄÔ¤ì½ÉÈµÉ¥ÕÌèÍÁàìô(¹¡ÐµÉèèµÝ­¥ÐµÍÉ½±±ÈµÑÉ¬ì­É½Õ¹èÑÉ¹ÍÁÉ¹Ðìô(ð½ÍÑå±ø((ð´´¥=LÁÀ%½¸¡¥¹±¥¹MYÌÑUI$¤´´ø(ñ±¥¹¬É°ôÁÁ±µÑ½Õ µ¥½¸¡ÉôÑé¥µ½ÍÙ­áµ°íÍØÐ±A!8ÉiåÑ]áÕèÁ¥!HÁ½Ù0ÍÍäÔÍ5äÕÙµÙ5©Ý5åéµ¥%!Ái!I½AM%á=¥%¡±]½Á¥5QÝ%¨ÐáµY©
+Í]HÁÁ¥5QÝ%¥	½i]±¹!Då%©Ñ5
+%¹å%©EÝ%¥	µ]áÍAM%©5ÝeQÑ%¤à­A!I±!EÁ¥=Q¥%!¬å%©Ý9M%XÑÅ¡µ9½Í$å%´ÅÁiIÍiM%iµ±ÍÁ¥$É4ÁeQ4ÅeM%i´åÕÅµe\ÅÁ!¬å%¤Å¡!	ÍiLÅéa8Ái\ÁÍ%!9¡¹5ÑÉYå]e¥%iÙ¹EÑÉ°ÙiPÁ¥9©E¥%iÙ¹EÑÉYÁhÉ ÁAM$Õ5¥A±9QAäÁia ÁA©ÝÙÍi¹Aôôø((ð½¡ø(ñ½äø((ñ¥Ø¥ôÁÀø((ð´´A$-d5=0´´ø(ñ¥Ø¥ôÁ¥5½°±ÍÌôµ½°µ½ÙÉ±äø(ñ¥Ø±ÍÌôµ½°µ½àø(ñ¥Ø±ÍÌôµ½°µ¥½¸øÄÈàÈÜÌìð½¥Øø(ñ¥Ø±ÍÌôµ½°µÑ¥Ñ±ùA$-ä9ÍÍÉ¥ð½¥Øø(ñ¥Ø±ÍÌôµ½°µÍù
+½±ÍÕ¡Ù¹Ñ¡É½Á¥ÁÉÑ¥ÙÈ¼¹Ñ½´%É°¸ñÈù¡Ù¥Í±ÙÁ¹Ì¹¼ÍÔ¥ÍÁ½Í¥Ñ¥Ù¼¸ð½¥Øø(ñ¥¹ÁÕÐ¥ôÁ¥%¹ÁÕÐ±ÍÌôµ½°µ¥¹ÁÕÐÑåÁôÁÍÍÝ½ÉÁ±¡½±ÈôÍ¬µ¹ÐµÁ¤ÀÌ´¸¸¸ÕÑ½½µÁ±Ñô½ÕÑ½½ÉÉÐô½ÕÑ½Á¥Ñ±¥éô½ø(ñÕÑÑ½¸¥ôÁ¥MÕµ¥Ð±ÍÌôµ½°µÍÕµ¥Ð½¹±¥¬ôÍÙÁ¥-ä ¤ùÑ¥ÙÈ¹Ñð½ÕÑÑ½¸ø(ñ¥Ø±ÍÌôµ½°µ½½ÑÈùÉµé¹¼±½±µ¹Ñµ¥½Ðì¹Õ¹¹Ù¥¼ÑÉ¥É½Ìð½¥Øø(ð½¥Øø(ð½¥Øø((ð´´!H´´ø(ñ¥Ø±ÍÌô¡Èø(ñ¥Ø±ÍÌô¡Èµ±Ðø(ñ¥Ø±ÍÌô±½¼ùMLð½¥Øø(ñ¥Øø(ñ¥Ø±ÍÌô¡ÈµÑ¥Ñ±ùM=
+%0MUAHð½¥Øø( <div class="header-sub">Edy & Nathan &middot; IA Ativa</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="clearChat()" title="Limpar">&#128465;</button>
+      <button class="icon-btn" onclick="clearApiKey()" title="Trocar Key">&#128273;</button>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar" id="statsBar"></div>
+
+  <!-- PLATFORM FILTER -->
+  <div class="platforms" id="platforms"></div>
+
+  <!-- CHAT AREA -->
+  <div class="chat-area" id="chatArea">
+    <!-- Welcome + Quick Actions (initial state) -->
+    <div id="welcomeBlock">
+      <div class="welcome">
+        <div class="welcome-icon">&#127919;</div>
+        <div class="welcome-title">Pronto pra dominar</div>
+        <div class="welcome-sub">Escolha uma acao rapida ou digite seu pedido</div>
+      </div>
+      <div class="quick-grid" id="quickGrid"></div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS INLINE -->
+  <div class="quick-inline hidden" id="quickInline">
+    <button class="quick-toggle" id="quickToggle" onclick="toggleQuickInline()"></button>
+    <div class="quick-scroll hidden" id="quickScroll"></div>
+  </div>
+
+  <!-- INPUT AREA -->
+  <div class="input-area">
+    <div class="error-bar hidden" id="errorBar"></div>
+    <div class="input-row">
+      <textarea id="inputField" class="input-field" rows="1" placeholder="Ex: Crie 3 roteiros virais pro TikTok..." autocomplete="off" autocorrect="on"></textarea>
+      <button id="sendBtn" class="send-btn" onclick="handleSend()">&#9654;</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  SOCIAL SUPER â Edy & Nathan Strategy Agent (PWA)
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+const SYSTEM_PROMPT = `Voce e o SOCIAL SUPER â o estrategista senior de midias sociais da dupla Edy & Nathan (@edyenathan), especialista em crescimento organico, engajamento e conversao para artistas de forro e vaquejada.
+
+PERFIL DA DUPLA:
+- Edy & Nathan: dupla de forro/vaquejada de Sertania-PE
+- @edyenathan: 615K seguidores IG, 214K TikTok, 149K YouTube, 60K Kwai
+- +300K ouvintes mensais no Spotify, +1.3M em todas as plataformas
+- DNA: autenticidade sertaneja, "Jeito Matuto", vaquejada real
+- Identidade visual: dourado + preto, tipografia premium
+
+METAS 15 DIAS (07-21/abr 2026):
+- Instagram: 615K -> 800K
+- TikTok: 214K -> 500K
+- YouTube: 149K -> 250K
+- Kwai: 60K -> 150K
+
+3 PILARES DE CONTEUDO:
+A) AUTORAIS â musicas proprias, bastidores de composicao, trechos acusticos
+B) ALCANCE â trends, challenges, humor sertanejo, conteudo viral
+C) REFERENCIA â covers estrategicos, homenagens, collabs
+
+METODOLOGIAS (GaryVee + Rachel Karten + Mari Smith):
+- GaryVee: 1 conteudo longo -> 10+ micro conteudos. Volume e rei.
+- Rachel Karten: Salvamentos > Likes. Hook nos 3s. CTA em todo post.
+- Mari Smith: Reels otimizados, Stories com stickers interativos, Lives semanais.
+
+FORMULA VIRAL COMPROVADA:
+Hook vulneravel -> ambiente real (fazenda/vaquejada) -> Edy cantando close-up -> postar 18h
+
+REGRAS OBRIGATORIAS:
+1. Todo output deve ser EXECUTAVEL IMEDIATAMENTE â zero teoria
+2. Hooks nos primeiros 3 segundos SEMPRE
+3. CTA em TODOS os posts (comentario, DM, salvamento ou compartilhamento)
+4. Identificar o pilar (A, B ou C) em cada conteudo
+5. Formato curto: maximo 60s para Reels/TikTok, 15s para Stories
+6. Referencia de estilo: Rey Vaqueiro, Ze Vaqueiro, Tarcisio, Luan Estilizado
+7. Linguagem do sertao nordestino â nunca formal/corporativo
+8. Sempre considerar concorrentes (Vybbe, Top Eventos, Camarote Shows)
+
+METRICAS PRIORITARIAS: Salvamentos > Compartilhamentos DM > Comentarios > Likes
+
+Responda SEMPRE em portugues brasileiro, com linguagem direta e pratica. Use emojis moderadamente. Estruture com headers quando necessario. Nunca seja generico.`;
+
+const PLATFORMS = [
+  { id: "all", label: "Todas", icon: "\uD83C\uDF10" },
+  { id: "ig", label: "Instagram", icon: "\uD83D\uDCF8" },
+  { id: "tk", label: "TikTok", icon: "\uD83C\uDFB5" },
+  { id: "yt", label: "YouTube", icon: "\u25B6\uFE0F" },
+  { id: "kw", label: "Kwai", icon: "\uD83D\uDFE0" },
+];
+
+const QUICK_ACTIONS = [
+  { id: "roteiro", label: "\uD83D\uDCDD Gerar Roteiro Viral", prompt: "Crie 3 roteiros virais completos (1 por pilar A, B, C). Cada um com: hook dos 3s, roteiro cena a cena, CTA final, melhor horario, hashtags e formato ideal." },
+  { id: "hooks", label: "\uD83C\uDFA3 Banco de Hooks", prompt: "Gere 10 hooks matadores para os primeiros 3 segundos de Reels/TikTok. Divida por pilar (A, B, C). Cada hook deve causar interrupcao de scroll imediata." },
+  { id: "calendario", label: "\uD83D\uDCC5 Calendario Semanal", prompt: "Monte um calendario editorial completo para os proximos 7 dias com 2 posts/dia. Inclua: dia, horario, plataforma, pilar (A/B/C), formato, hook, CTA e referencia visual." },
+  { id: "garyvee", label: "\u267B\uFE0F Reaproveitamento GaryVee", prompt: "Pegue o conceito de 1 video de show ao vivo da dupla e transforme em 10+ micro conteudos: 3 Reels, 3 TikToks, 2 Stories, 1 carrossel e 1 YouTube Shorts. Cada um com hook e CTA." },
+  { id: "ctas", label: "\uD83D\uDCAC CTAs de Engajamento", prompt: "Gere 15 CTAs poderosos divididos em 3 categorias: 5 para gerar COMENTARIOS, 5 para gerar COMPARTILHAMENTO via DM, 5 para gerar SALVAMENTOS. Todos no tom sertanejo da dupla." },
+  { id: "trends", label: "\uD83D\uDD25 Trends Adaptadas", prompt: "Identifique 5 trends atuais (audios, formatos, challenges) e adapte cada uma para o universo forro/vaquejada de Edy & Nathan. Inclua roteiro completo de execucao." },
+  { id: "b2b", label: "\uD83C\uDFDB\uFE0F Conteudo B2B Shows", prompt: "Crie 3 conteudos de vitrine para atrair prefeituras e contratantes de shows. Formato: Reels/carrossel mostrando estrutura, publico, energia do show. Com CTA direcionando pro WhatsApp comercial." },
+  { id: "stories", label: "\uD83D\uDCF1 Sequencia Stories", prompt: "Monte uma sequencia de 8 Stories estrategicos para hoje. Inclua: stickers interativos (enquete, quiz, slider), mix de bastidor + conteudo + CTA. Objetivo: aumentar tempo de visualizacao e respostas." },
+  { id: "caption", label: "\u270D\uFE0F Legendas Magneticas", prompt: "Escreva 5 legendas magneticas para posts do feed. Cada uma com: gancho na primeira linha, storytelling curto, CTA forte. Estilo autentico sertanejo, nunca generico." },
+  { id: "collab", label: "\uD83E\uDD1D Estrategia Collabs", prompt: "Sugira 5 collabs estrategicas viaveis para Edy & Nathan. Para cada uma: artista/influencer, formato do conteudo, plataforma ideal, potencial de alcance e como abordar." },
+];
+
+const STATS = [
+  { label: "IG", current: "615K", target: "800K", color: "var(--ig)", progress: 77 },
+  { label: "TK", current: "214K", target: "500K", color: "var(--tk)", progress: 43 },
+  { label: "YT", current: "149K", target: "250K", color: "var(--yt)", progress: 60 },
+  { label: "KW", current: "60K", target: "150K", color: "var(--kw)", progress: 40 },
+];
+
+// âââ STATE âââ
+let apiKey = "";
+let chatHistory = [];
+let currentPlatform = "all";
+let isLoading = false;
+let showQuickInline = false;
+
+// âââ INIT âââ
+function init() {
+  try { apiKey = localStorage.getItem("ss_api_key") || ""; } catch(e) { apiKey = ""; }
+
+  renderStats();
+  renderPlatforms();
+  renderQuickGrid();
+  renderQuickScroll();
+  updateApiModal();
+  updateApiInputListener();
+  setupInputField();
+}
+
+// âââ API KEY âââ
+function updateApiModal() {
+  document.getElementById("apiModal").classList.toggle("hidden", !!apiKey);
+}
+
+function updateApiInputListener() {
+  const inp = document.getElementById("apiInput");
+  const btn = document.getElementById("apiSubmit");
+  inp.addEventListener("input", () => {
+    const hasVal = inp.value.trim().length > 0;
+    btn.classList.toggle("ready", hasVal);
+  });
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && inp.value.trim()) saveApiKey();
+  });
+}
+
+function saveApiKey() {
+  const key = document.getElementById("apiInput").value.trim();
+  if (!key) return;
+  apiKey = key;
+  try { localStorage.setItem("ss_api_key", key); } catch(e) {}
+  updateApiModal();
+}
+
+function clearApiKey() {
+  apiKey = "";
+  try { localStorage.removeItem("ss_api_key"); } catch(e) {}
+  document.getElementById("apiInput").value = "";
+  document.getElementById("apiSubmit").classList.remove("ready");
+  updateApiModal();
+}
+
+// âââ RENDER STATS âââ
+function renderStats() {
+  const container = document.getElementById("statsBar");
+  container.innerHTML = STATS.map(s => `
+    <div class="stat-card">
+      <div class="stat-label" style="color:${s.color}">${s.label}</div>
+      <div class="stat-value">${s.current}</div>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" style="widt(:${s.progress}%;background:${s.color}"></div>
+      </div>
+      <div class="stat-meta">meta ${s.target}</div>
+    </div>
+  `).join("");
+}
+
+// âââ RENDER PLATFORMS âââ
+function renderPlatforms() {
+  const container = document.getElementById("platforms");
+  container.innerHTML = PLATFORMS.map(p => `
+    <button class="plat-btn ${p.id === currentPlatform ? 'active' : ''}"
+            onclick="selectPlatform('${p.id}')">${p.icon} ${p.label}</button>
+  `).join("");
+}
+
+function selectPlatform(id) {
+  currentPlatform = id;
+  renderPlatforms();
+}
+
+// âââ RENDER QUICK ACTIONS âââ
+function renderQuickGrid() {
+  const grid = document.getElementById("quickGrid");
+  grid.innerHTML = QUICK_ACTIONS.map(a => `
+    <button class="quick-btn" onclick="handleQuickAction('${a.id}')">${a.label}</button>
+  `).join("");
+}
+
+function renderQuickScroll() {
+  const scroll = document.getElementById("quickScroll");
+  scroll.innerHTML = QUICK_ACTIONS.map(a => `
+    <button class="quick-chip" onclick="handleQuickAction('${a.id}')">${a.label}</button>
+  `).join("");
+}
+
+function handleQuickAction(id) {
+  const action = QUICK_ACTIONS.find(a => a.id === id);
+  if (action) sendMessage(action.prompt);
+}
+
+function toggleQuickInline() {
+  showQuickInline = !showQuickInline;
+  document.getElementById("quickScroll").classList.toggle("hidden", !showQuickInline);
+  document.getElementById("quickToggle").textContent = showQuickInline ? "\u25B2 Ocultar acoes" : "\u25BC Acoes rapidas";
+}
+
+// âââ INPUT FIELD âââ
+function setupInputField() {
+  const field = document.getElementById("inputField");
+
+  field.addEventListener("input", () => {
+    field.style.height = "auto";
+    field.style.height = Math.min(field.scrollHeight, 120) + "px";
+    updateSendBtn();
+  });
+
+  field.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  });
+}
+
+function updateSendBtn() {
+  const btn = document.getElementById("sendBtn");
+  const field = document.getElementById("inputField");
+  const canSend = field.value.trim() && !isLoading;
+  btn.classList.toggle("active", canSend);
+}
+
+function handleSend() {
+  const field = document.getElementById("inputField");
+  const text = field.value.trim();
+  if (!text || isLoading) return;
+  field.value = "";
+  field.style.height = "auto";
+  updateSendBtn();
+  sendMessage(text);
+}
+
+// âââ MESSAGES âââ
+function addMessage(role, content) {
+  const chatArea = document.getElementById("chatArea");
+  const div = document.createElement("div");
+  div.className = `msg-row ${role}`;
+  div.innerHTML = `<div class="msg-bubble ${role}">${escapeHtml(content)}</div>`;
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function showTyping() {
+  const chatArea = document.getElementById("chatArea");
+  const div = document.createElement("div");
+  div.id = "typingIndicator";
+  div.className = "typing";
+  div.innerHTML = `
+    <span class="typing-label">SOCIAL SUPER</span>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+  `;
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById("typingIndicator");
+  if (el) el.remove();
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// âââ SEND MESSAGE âââ
+async function sendMessage(text) {
+  if (isLoading) return;
+
+  // Hide welcome, show inline quick actions
+  document.getElementById("welcomeBlock").classList.add("hidden");
+  document.getElementById("quickInline").classList.remove("hidden");
+  document.getElementById("quickToggle").textContent = "\u25BC Acoes rapidas";
+  showQuickInline = false;
+  document.getElementById("quickScroll").classList.add("hidden");
+
+  // Add user message
+  const userMsg = { role: "user", content: text };
+  chatHistory.push(userMsg);
+  addMessage("user", text);
+
+  isLoading = true;
+  updateSendBtn();
+  showTyping();
+  document.getElementById("errorBar").classList.add("hidden");
+
+  try {
+    const reply = await callClaude(chatHistory, currentPlatform);
+    const assistantMsg = { role: "assistant", content: reply };
+    chatHistory.push(assistantMsg);
+    hideTyping();
+    addMessage("assistant", reply);
+  } catch (err) {
+    hideTyping();
+    const errMsg = err.message || "Erro desconhecido";
+    addMessage("assistant", "\u26A0\uFE0F Erro: " + errMsg);
+
+    const errorBar = document.getElementById("errorBar");
+    errorBar.textContent = errMsg;
+    errorBar.classList.remove("hidden");
+
+    if (errMsg.includes("invalid") || errMsg.includes("authentication") || errMsg.includes("401")) {
+      clearApiKey();
+    }
+  } finally {
+    isLoading = false;
+    updateSendBtn();
+  }
+}
+
+// âââ API CALL âââ
+async function callClaude(messages, platformFilter) {
+  const platformNote = platformFilter !== "all"
+    ? `\n\nFOCO: Otimize tudo para ${PLATFORMS.find(p => p.id === platformFilter)?.label}. Adapte formatos, duracoes e linguagem para essa plataforma especifica.`
+    : "";
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 4000,
+      system: SYSTEM_PROMPT + platformNote,
+      messages: messages,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `Erro da API: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.content
+    ?.filter(b => b.type === "text")
+    .map(b => b.text)
+    .join("\n") || "Sem resposta.";
+}
+
+// âââ CLEAR CHAT âââ
+function clearChat() {
+  chatHistory = [];
+  const chatArea = document.getElementById("chatArea");
+  // Remove all messages and typing indicators
+  chatArea.querySelectorAll(".msg-row, .typing").forEach(el => el.remove());
+  // Show welcome again
+  document.getElementById("welcomeBlock").classList.remove("hidden");
+  document.getElementById("quickInline").classList.add("hidden");
+  document.getElementById("errorBar").classList.add("hidden");
+}
+
+// âââ START âââ
+document.addEventListener("DOMContentLoaded", init);
+</script>
+
+</body>
+</html>
