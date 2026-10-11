@@ -53,3 +53,24 @@ Se você ainda tá aprendendo como fazer orçamento, começa pelo modelo, não p
 
 #orçamento #modelodeorçamento
 ```
+
+## DM de entrega (quem comentar MODELO)
+
+Mensagem 1, na hora:
+```
+{{nome}}, tá aqui o modelo de orçamento: {{link}}
+
+O resto já vem pronto, então você só troca o que muda de um cliente pro outro.
+
+Quanto tempo leva o seu orçamento hoje?
+```
+
++4 dias, só se tiver dica nova de verdade (senão, não manda):
+```
+{{nome}}, lembrei de uma coisa que faltou te falar: {{uma dica real de uso do modelo}}. Conseguiu testar?
+```
+
++10 dias, fecha o assunto:
+```
+{{nome}}, última mensagem sobre isso, prometo. Se o modelo travou em alguma parte, me fala que eu te ajudo. Se não, tudo certo.
+```
