@@ -89,6 +89,8 @@ h.STAKES |= with_unaccented({
     "arrependimento", "devia", "deveria", "ainda", "já", "só", "sem", "contra",
     "cancelado", "cancelou", "furou", "atrasou", "multa", "processo", "vazio",
     "lotado", "esgotado", "flopou", "flopa", "flopam", "graça",
+    "custava", "custavam", "substituiu", "substitui", "substituí", "substituíram",
+    "economizou", "salvou",
 })
 
 h.IMPERATIVES |= with_unaccented({
