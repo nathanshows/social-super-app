@@ -37,4 +37,19 @@ Comenta MODELO que eu te mando o meu.
 
 - Preencher os dois `{{ }}` com o que tem de verdade no modelo.
 - Ter o modelo pronto para mandar a quem comentar MODELO.
-- Legenda: rodar `/ig-caption` (com `caption_pt.py`).
+
+## Legenda
+
+Termos de busca (sugestão, confirmar): "modelo de orçamento", "como fazer orçamento". Linter `caption_pt.py`: READY.
+
+```
+Comenta MODELO que eu te mando o modelo de orçamento que eu uso hoje.
+
+Cada orçamento me levava 5 horas.
+
+Eu montava tudo do zero, toda vez. Quando percebi que quase tudo se repete, montei um modelo pronto. Agora eu só troco o que muda de um cliente pro outro e fecho em 20 minutos.
+
+Se você ainda tá aprendendo como fazer orçamento, começa pelo modelo, não pela folha em branco.
+
+#orçamento #modelodeorçamento
+```
