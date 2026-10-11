@@ -23,8 +23,9 @@ python3 detect.py before.txt after.txt         # prove the delta
 `humanize.py` detects a Portuguese draft and swaps the English slop lexicon
 for `slop_pt.json` (force it with `--lang pt` or `--lang en`). Without that it
 rewrote Portuguese with English words ("É crucial" -> "É important").
-`detect.py` has not been adapted yet: its SLOP DENSITY check uses the English
-lexicon, so treat its score on Portuguese text as indicative only.
+`detect.py` detects Portuguese the same way and scores it with Portuguese
+patterns (accented words, tá/pra/num/cê/né as contractions, eu/meu/você/te
+as person, R$ amounts, slop_pt.json). Thresholds are unchanged.
 
 Both read `slop.json`: 154 stock words and phrases with plain-English
 replacements, 18 invisible character classes, 11 typographic substitutions and

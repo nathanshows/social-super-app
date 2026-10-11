@@ -19,6 +19,13 @@ Usage
   pbpaste | python3 detect.py -
   python3 detect.py draft.txt --json
   python3 detect.py before.txt after.txt      # compare two drafts
+  python3 detect.py legenda.txt --lang pt     # language is detected; force it here
+
+A Portuguese draft is detected from its function words (same rule as
+humanize.py) and is scored with Portuguese word patterns: accented words,
+spoken contractions (tá, pra, num, cê, né), Portuguese pronouns (eu, meu,
+você, te, a gente), R$ amounts, and slop_pt.json for SLOP DENSITY and the
+structural tells. The thresholds are unchanged.
 """
 
 import argparse
@@ -38,6 +45,20 @@ CONTRACTIONS = re.compile(r"\b\w+'(?:s|t|re|ve|ll|d|m)\b", re.IGNORECASE)
 PRONOUNS = re.compile(r"\b(i|me|my|mine|we|us|our|you|your)\b", re.IGNORECASE)
 NUMBERS = re.compile(r"\b\d[\d,.]*%?\b|\$\d")
 PROPER = re.compile(r"(?<![.!?]\s)(?<!^)\b[A-Z][a-z]{2,}\b", re.MULTILINE)
+
+
+def use_portuguese():
+    """Rebind the word patterns for a Portuguese draft. Thresholds stay put."""
+    global WORD_RE, CONTRACTIONS, PRONOUNS, NUMBERS, PROPER
+    WORD_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ']+")
+    CONTRACTIONS = re.compile(
+        r"\b(?:tá|tô|tava|tavam|pra|pro|pras|pros|num|numa|nuns|numas|dum|duma|"
+        r"cê|né|daí|vamo|ó)\b", re.IGNORECASE)
+    PRONOUNS = re.compile(
+        r"\b(?:eu|me|meu|minha|meus|minhas|comigo|nós|a gente|você|vocês|vc|"
+        r"te|teu|tua|seu|sua|seus|suas|contigo)\b", re.IGNORECASE)
+    NUMBERS = re.compile(r"\b\d[\d,.]*%?\b|R?\$\s?\d")
+    PROPER = re.compile(r"(?<![.!?]\s)(?<!^)\b[A-ZÀ-ÖØ-Þ][a-zß-öø-ÿ]{2,}\b", re.MULTILINE)
 
 
 def clamp(n):
@@ -196,6 +217,8 @@ def main():
     ap.add_argument("compare", nargs="?", help="second file, to show before/after")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--lexicon", default=LEX)
+    ap.add_argument("--lang", choices=["auto", "en", "pt"], default="auto",
+                    help="language of the draft; pt uses Portuguese patterns (default: detect)")
     args = ap.parse_args()
 
     lex = json.load(open(args.lexicon, encoding="utf-8"))
@@ -204,6 +227,13 @@ def main():
     targets = [(args.input, read(args.input))]
     if args.compare:
         targets.append((args.compare, read(args.compare)))
+
+    sys.path.insert(0, HERE)
+    from humanize import detect_lang, lexicon_for   # noqa: E402
+    lang = detect_lang(targets[0][1]) if args.lang == "auto" else args.lang
+    if lang == "pt":
+        use_portuguese()
+        lex = lexicon_for(lex, "pt")
 
     payload = []
     for name, text in targets:

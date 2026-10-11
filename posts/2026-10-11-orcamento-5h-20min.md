@@ -40,14 +40,14 @@ Comenta MODELO que eu te mando o meu.
 
 ## Legenda
 
-Termos de busca (sugestão, confirmar): "modelo de orçamento", "como fazer orçamento". Linter `caption_pt.py`: READY.
+Termos de busca (sugestão, confirmar): "modelo de orçamento", "como fazer orçamento". Linter `caption_pt.py`: READY. `detect.py`: 68,2 REVIEW (falta especificidade: entra quando os {{ }} do modelo forem preenchidos).
 
 ```
 Comenta MODELO que eu te mando o modelo de orçamento que eu uso hoje.
 
-Cada orçamento me levava 5 horas.
+Cada orçamento me levava 5 horas. Hoje, 20 minutos.
 
-Eu montava tudo do zero, toda vez. Quando percebi que quase tudo se repete, montei um modelo pronto. Agora eu só troco o que muda de um cliente pro outro e fecho em 20 minutos.
+Eu montava tudo do zero. Toda santa vez. Quando percebi que quase tudo se repete de um orçamento pro outro, montei um modelo pronto, e agora eu só troco o que muda de um cliente pro outro.
 
 Se você ainda tá aprendendo como fazer orçamento, começa pelo modelo, não pela folha em branco.
 
