@@ -59,26 +59,41 @@ nothing else does.
 
 ## The loop
 
-**1. Pick three hooks, not one.** Run the idea through `hooks.json`, choose
-three formulas that genuinely fit it, and write the spoken line plus the
-on-screen line for each. Different formulas, not three rewrites of one.
+The hook is scored before the camera is on, not judged after posting. Ten
+hooks go in, two come out, and the user picks one.
 
-**2. Score them.** Put the three spoken lines in a file, one per line, and run
-`hookscore.py`. Show the user the ranking. If the top one is under 50, you do
-not have the hook yet and no amount of editing fixes that.
+**1. Write ten hooks, ten formulas.** Run the idea through `hooks.json` and
+write one hook from each of ten different formulas. Different formulas, not
+ten rewrites of one. Put only the spoken line for the first two seconds in a
+file, one hook per line. Keep each on-screen line next to it, outside the file.
 
-**3. Write the script** on the winning hook. Plain spoken language, the way the
+**2. Score them.** Run `hookscore.py` on the file. Show the user the full
+ranking, with the weakest property under each hook.
+
+**3. Cut everything under 50.** No exceptions, no "it's close". A hook under
+50 is out.
+
+**4. If nothing clears 50, the idea is the problem, not the hook.** Do not
+write an eleventh hook. Go back to the user and get the number: what
+happened, to whom, and what it cost or returned. Then start again at step 1.
+
+**5. Keep the top two and let the user decide.** Present the two finalists
+and have the user choose, by the rule in `hooks.json`: if the hook would work
+for anyone else in their niche, it is not theirs. The one with the thing only
+they can say wins. Do not pick for them.
+
+**6. Write the script** on the winning hook. Plain spoken language, the way the
 user actually talks. Contractions. Short lines. No sentence they would have to
 rehearse.
 
-**4. Time it.** Run `beats.py script.txt --target {length}`. Fix every flag:
+**7. Time it.** Run `beats.py script.txt --target {length}`. Fix every flag:
 a hook past 3 seconds, any beat over 4 seconds, a run of beats with nothing
 concrete in them, no loop. Re-run until it is clean.
 
-**5. Humanize it.** Run the script through `/ig-human` before showing it. A
+**8. Humanize it.** Run the script through `/ig-human` before showing it. A
 written-sounding line is obvious the moment someone says it out loud.
 
-**6. Print the block.** The script in a fenced block, the on-screen text as a
+**9. Print the block.** The script in a fenced block, the on-screen text as a
 separate list with timings, and then:
 
 ```
@@ -92,7 +107,7 @@ caption:    run /ig-caption next
 Reply "yes" to log it, or tell me what to change.
 ```
 
-**7. Never publish.** This skill produces a script. The user shoots it and
+**10. Never publish.** This skill produces a script. The user shoots it and
 posts it. On "yes", append to `~/.claude/instagram/log.md` with the date, the
 hook formula used and the first line, so `/ig-audit` has a history later.
 
@@ -141,7 +156,9 @@ HOOKS  (scored)
                                   on screen: 2 YEARS WASTED
   54  OK      #9  The Steal       "Steal the proposal template that did it."
                                   on screen: STEAL THIS
+  ...     seven more, four of them under 50: cut
 
-Shooting #5: the ratio is believable, it reads in one glance on screen,
-and the number is yours.
+FINALISTS  #5 and #1. Your call. Which one could nobody else in your
+niche say? The "five hours" is your own number; the "two years" is too.
+Pick the one you would say without reading it.
 ```
