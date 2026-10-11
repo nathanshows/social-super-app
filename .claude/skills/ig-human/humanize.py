@@ -24,6 +24,10 @@ Usage
   pbpaste | python3 humanize.py - --report
   python3 humanize.py draft.txt --json
   python3 humanize.py draft.txt -o clean.txt
+  python3 humanize.py legenda.txt --lang pt     # language is detected; force it here
+
+A Portuguese draft is detected from its function words and gets slop_pt.json
+for the lexical pass and the structures, instead of the English lexicon.
 """
 
 import argparse
@@ -43,6 +47,38 @@ SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")
 def load_lexicon(path=LEX):
     with open(path, encoding="utf-8") as fh:
         return json.load(fh)
+
+
+LEX_PT = os.path.join(HERE, "slop_pt.json")
+# Structures that read the same in any language: emoji, hashtag walls, caps.
+NEUTRAL_STRUCTURES = {"rocket", "hashtag-wall", "emoji-bullets", "caps-shout"}
+PT_MARKERS = {"não", "nao", "que", "você", "voce", "pra", "com", "uma", "é",
+              "isso", "mais", "seu", "sua", "na", "no", "do", "da", "os", "as",
+              "eu", "meu", "minha", "também", "então", "está", "tá", "são"}
+EN_MARKERS = {"the", "and", "you", "your", "is", "to", "of", "that", "it",
+              "this", "with", "for", "are", "was", "my", "i", "what", "be"}
+
+
+def detect_lang(text):
+    """'pt' or 'en', from function words. A draft is one or the other."""
+    w = re.findall(r"[^\W\d_]+", text.lower())
+    pt = sum(1 for x in w if x in PT_MARKERS)
+    en = sum(1 for x in w if x in EN_MARKERS)
+    return "pt" if pt > en else "en"
+
+
+def lexicon_for(lex, lang):
+    """English slop.json run on Portuguese turns "crucial" into "important".
+    For Portuguese, keep the invisible and typographic passes and the neutral
+    structures, and take words, phrases and structures from slop_pt.json."""
+    if lang != "pt" or not os.path.exists(LEX_PT):
+        return lex
+    pt = load_lexicon(LEX_PT)
+    out = dict(lex)
+    out["words"], out["phrases"] = pt["words"], pt["phrases"]
+    out["structures"] = [s for s in lex["structures"] if s.get("id") in NEUTRAL_STRUCTURES] \
+        + pt["structures"]
+    return out
 
 
 def _cp(spec):
@@ -159,7 +195,7 @@ def pass_lexical(text, lex):
     text = re.sub(r"\n{3,}", "\n\n", text)
     # An em dash that became a comma, followed by a sentence connective, leaves
     # a splice ("is important, also, it's proof"). Promote it to a full stop.
-    text = re.sub(r",\s*(also|so|still|basically|in the end)\s*,\s*",
+    text = re.sub(r",\s*(also|so|still|basically|in the end|também|então|ainda|basicamente|no fim)\s*,\s*",
                   lambda m: ". " + m.group(1)[0].upper() + m.group(1)[1:] + ", ", text)
     return text, hits
 
@@ -196,10 +232,10 @@ def restore_capitals(original, text):
     a deliberately lower-case voice is a style, not an artefact, and shouting
     over it would be exactly the kind of thing this script exists to stop.
     """
-    starts = re.findall(r"(?:^|[.!?]\s+|\n)\s*([A-Za-z])", original)
+    starts = re.findall(r"(?:^|[.!?]\s+|\n)\s*([A-Za-zÀ-ÖØ-öø-ÿ])", original)
     if not starts or sum(1 for c in starts if c.isupper()) * 2 < len(starts):
         return text
-    return re.sub(r"(?:^|(?<=[.!?] )|(?<=[.!?]\n)|(?<=\n))\s*([a-z])",
+    return re.sub(r"(?:^|(?<=[.!?] )|(?<=[.!?]\n)|(?<=\n))\s*([a-zß-öø-ÿ])",
                   lambda m: m.group(0)[:-1] + m.group(1).upper(), text)
 
 
@@ -260,10 +296,13 @@ def main():
     ap.add_argument("--report", action="store_true", help="print what changed, to stderr")
     ap.add_argument("--json", action="store_true", help="emit {text, report} as JSON")
     ap.add_argument("--lexicon", default=LEX, help="path to slop.json")
+    ap.add_argument("--lang", choices=["auto", "en", "pt"], default="auto",
+                    help="language of the draft; pt uses slop_pt.json (default: detect)")
     args = ap.parse_args()
 
     raw = sys.stdin.read() if args.input == "-" else open(args.input, encoding="utf-8").read()
-    lex = load_lexicon(args.lexicon)
+    lang = detect_lang(raw) if args.lang == "auto" else args.lang
+    lex = lexicon_for(load_lexicon(args.lexicon), lang)
     clean, report = humanize(raw, lex)
 
     if args.json:

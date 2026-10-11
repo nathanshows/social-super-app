@@ -88,7 +88,7 @@ h.STAKES |= with_unaccented({
     "exceto", "problema", "risco", "perigo", "cuidado", "arrependo",
     "arrependimento", "devia", "deveria", "ainda", "já", "só", "sem", "contra",
     "cancelado", "cancelou", "furou", "atrasou", "multa", "processo", "vazio",
-    "lotado", "esgotado", "flopou",
+    "lotado", "esgotado", "flopou", "flopa", "flopam", "graça",
 })
 
 h.IMPERATIVES |= with_unaccented({
@@ -104,13 +104,13 @@ h.WEAK_OPENERS += [strip_accents(x) for x in [
     "então", "bom", "oi", "olá", "gente", "galera", "fala", "e aí", "eaí",
     "hoje", "basicamente", "sinceramente", "olha", "vamos", "bora", "nesse",
     "neste", "no vídeo", "você sabia", "sabia que", "já pensou", "tem gente",
-    "existe", "isso é", "é que", "como um", "como uma", "quando", "se você",
-    "sabe", "tipo", "assim",
+    "existe", "isso é", "é que", "como um", "como uma", "quando",
+    "sabe", "tipo", "assim", "se você já",
 ]]
 # check_frontload compares lowercase words that keep their accents, so keep
 # the accented spelling too.
 h.WEAK_OPENERS += ["então", "olá", "e aí", "eaí", "no vídeo", "você sabia",
-                   "já pensou", "isso é", "é que", "se você"]
+                   "já pensou", "isso é", "é que", "se você já"]
 
 h.DEALBREAKERS += [
     (re.compile(r"(?i)^\s*(?:para de rolar|pare de rolar|não rola|nao rola)"),
@@ -168,6 +168,8 @@ def check_stakes(text):
     """Tension, cost, negation. Something the viewer might lose."""
     w = [x.lower().strip("'’") for x in words(text)]
     markers = sorted({x for x in w if x in h.STAKES})
+    if re.search(r"(?i)\bpar[ae] de\b", text):          # "para de" = stop doing
+        markers.append("para de")
     if re.search(r"R?\$\s?\d", text):
         markers.append("a price")
     n = len(markers)
@@ -178,6 +180,41 @@ def check_stakes(text):
 
 
 h.check_stakes = check_stakes
+
+
+def check_frontload(text):
+    """hookscore.check_frontload, plus "para de" / "pare de" as a payload
+    word: it is the "stop" of "stop doing X", and "para" alone is not."""
+    w = words(text)
+    if not w:
+        return 0.0, "empty"
+    low = [x.lower().strip("'’") for x in w]
+    opener = " ".join(low[:2])
+    penalty, hit_opener = 0, None
+    for weak in h.WEAK_OPENERS:
+        if opener.startswith(weak) or low[0] == weak:
+            penalty, hit_opener = 30, weak
+            break
+    payload = None
+    for i, token in enumerate(low):
+        if (token in h.STAKES or token in h.SPOKEN_NUMBERS or token in h.MONEY_WORDS
+                or h.NUMBER_RE.match(w[i]) or (i and h.PROPER_RE.match(w[i]))
+                or (token in ("para", "pare") and i + 1 < len(low) and low[i + 1] == "de")):
+            payload = i
+            break
+    if payload is None:
+        base, where = 30.0, "no payload word anywhere in the line"
+    elif payload <= 3:
+        base, where = 100.0, f"payload at word {payload + 1}"
+    elif payload <= 6:
+        base, where = 70.0, f"payload at word {payload + 1}, could move forward"
+    else:
+        base, where = 40.0, f"payload at word {payload + 1}, too late"
+    detail = where + (f"; weak opener \"{hit_opener}\"" if hit_opener else "")
+    return h.clamp(base - penalty), detail
+
+
+h.check_frontload = check_frontload
 
 
 if __name__ == "__main__":

@@ -21,6 +21,13 @@ One tool lives in this folder and it runs:
 python3 swipe.py captured.tsv --out ~/.claude/instagram/swipe.md
 ```
 
+For reels in Portuguese, run `swipe_pt.py` instead, same arguments. It
+classifies Portuguese hooks against the 26 formulas, scores them with
+`hookscore_pt.py`, reads "412 mil" and "1,2 mi" as numbers, and takes a header
+in Portuguese (conta, seguidores, mediana, views, gancho). `swipe.py` reads
+"1,2 mi" as 12 views. For Brazilian reels, pull subtitles with
+`--sub-langs "pt.*"`.
+
 ## The one idea that makes this worth doing
 
 **Raw views are not evidence.** An account with two million followers doing

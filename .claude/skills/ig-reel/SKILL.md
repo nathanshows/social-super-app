@@ -21,9 +21,11 @@ python3 hookscore.py hooks.txt              # rank your hook options
 python3 hookscore.py --hook "one line"      # score a single one
 python3 beats.py script.txt --target 30     # timed beat sheet before you shoot
 python3 hookscore_pt.py ganchos.txt         # same ruler, for Portuguese hooks
+python3 beats_pt.py roteiro.txt --target 30 --wpm 180   # beat sheet, Portuguese
 ```
 
-Hooks in Portuguese always go through `hookscore_pt.py`, never `hookscore.py`.
+Hooks and scripts in Portuguese always go through `hookscore_pt.py` and
+`beats_pt.py`, never `hookscore.py` or `beats.py`.
 The English ruler splits accented words and does not know the Portuguese word
 lists, so it under-scores a Portuguese hook by about half and the 50 cut would
 throw out good hooks. English hooks score identically on both.

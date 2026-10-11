@@ -17,6 +17,10 @@ python3 caption.py caption.txt
 python3 caption.py caption.txt --keywords "client proposals,agency pricing"
 ```
 
+For a caption in Portuguese, run `caption_pt.py` instead, same arguments.
+`caption.py` reads `#clínicadeestética` as `#cl`, does not know "comenta PELE"
+or "link na bio" as asks, and matches search terms only with the exact accents.
+
 It prints the caption the way the feed prints it: the first 125 characters in a
 box, everything else behind the tap. Read that box before you read anything
 else you wrote.
